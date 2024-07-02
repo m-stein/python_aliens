@@ -9,7 +9,7 @@ class Aliens:
     def __init__(self):
         """Initialize the game without running it."""
         pygame.init()
-        self.screen = pygame.display.set_mode((800, 600))
+        self.screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
         self.clock = pygame.time.Clock()
         self.bg_color = (25, 25, 25)
         self.player = Player(self.screen)
@@ -19,7 +19,7 @@ class Aliens:
     def run_game(self):
         """Run the games main loop."""
         while True:
-            delta_time = self.clock.tick(self.max_fps)
+            delta_time = self.clock.tick(self.max_fps) / 1000
             self._process_global_events()
             self.player.update(delta_time)
             self._update_screen()
@@ -30,6 +30,9 @@ class Aliens:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 sys.exit()
+            elif event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_q:
+                    sys.exit()
 
     def _update_screen(self):
         """Draw the current frame onto the screen and flip it."""

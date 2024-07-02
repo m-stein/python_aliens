@@ -1,5 +1,6 @@
 import pygame
 import vpython as vp
+from animation import Animation
 
 
 class Player:
@@ -11,18 +12,20 @@ class Player:
         self.screen = screen
         self.pos = vp.vector(
             screen.get_width() / 2 - self.image.get_width() / 2,
-            screen.get_height() - self.image.get_width(),
-            0)
-        self.speed = .8
+            screen.get_height() - self.image.get_height(), 0)
+        self.speed = 400
         self.image_scale = 2
         self.collider_offset = vp.vector(8, 16, 0) * self.image_scale
         self.collider_size = vp.vector(17, 14, 0) * self.image_scale
+        self.animation = Animation(vp.vector(32, 32, 0) * self.image_scale, 2, 0.1)
 
     def draw(self):
         """Draw players visual to the screen."""
-        self.screen.blit(self.image, (self.pos.x, self.pos.y))
+        self.screen.blit(self.image, (self.pos.x, self.pos.y), self.animation.frame_rectangle())
 
     def update(self, delta_time):
+        """Update internal state to elapsed time since the last call."""
+        self.animation.update(delta_time)
         key_pressed = pygame.key.get_pressed()
 
         direction = vp.vector(0, 0, 0)
