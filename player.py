@@ -11,7 +11,7 @@ class Player:
             self.fb_rect.width / 2 - self.image.get_width() / 2,
             self.fb_rect.height - self.image.get_height(), 0)
         self.draw_collider = False
-        self.speed = 400.
+        self.speed = 300.
         self.collider_offset = Vector3(4, 9, 0)
         self.collider_size = Vector3(23, 19, 0)
         self.min_y = self.fb_rect.height - 100 - self.collider_offset.y

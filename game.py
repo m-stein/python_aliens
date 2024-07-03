@@ -3,6 +3,7 @@ import sys
 from player import Player
 from bullet import Bullet
 from alien import Alien
+from stars import Stars
 
 
 class Game:
@@ -11,19 +12,27 @@ class Game:
         pygame.init()
         self.display = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
         self.fb_rect = pygame.rect.Rect(0, 0, 400, 400)
+        self.fb = pygame.surface.Surface((self.fb_rect.width, self.fb_rect.height))
         self.clock = pygame.time.Clock()
-        self.bg_color = (25, 25, 25)
+        self.bg_color = (10, 10, 10)
         self.player = Player(self.fb_rect)
         self.alien = Alien(self.fb_rect)
         self.max_fps = 60
         self.bullets = []
         self.max_num_bullets = 3
         self.fb_blit_rect = self.fb_rect.fit(self.display.get_rect())
+        self.stars_layers = [
+            Stars(0.9, 60, self.fb_rect.height),
+            Stars(0.7, 40, self.fb_rect.height),
+            Stars(0.5, 20, self.fb_rect.height),
+        ]
         pygame.display.set_caption("Aliens!")
 
     def run(self):
         while True:
             delta_time = self.clock.tick(self.max_fps) / 1000
+            for stars in self.stars_layers:
+                stars.update(delta_time)
             self.player.update(delta_time)
             self.alien.update(delta_time)
             self._update_bullets(delta_time)
@@ -42,13 +51,14 @@ class Game:
                         self.bullets.append(Bullet(self.player.rifle_tip()))
 
     def _update_display(self):
-        fb = pygame.surface.Surface((self.fb_rect.width, self.fb_rect.height))
-        fb.fill(self.bg_color)
-        self.player.draw(fb)
-        self.alien.draw(fb)
+        self.fb.fill(self.bg_color)
+        for stars in self.stars_layers:
+            stars.draw(self.fb)
+        self.player.draw(self.fb)
+        self.alien.draw(self.fb)
         for bullet in self.bullets:
-            bullet.draw(fb)
-        fb = pygame.transform.scale(fb, self.fb_blit_rect.size)
+            bullet.draw(self.fb)
+        fb = pygame.transform.scale(self.fb, self.fb_blit_rect.size)
         self.display.blit(fb, self.fb_blit_rect.topleft)
         pygame.display.update()
 
