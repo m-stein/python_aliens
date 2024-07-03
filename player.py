@@ -4,32 +4,31 @@ from animation import Animation
 
 
 class Player:
-    def __init__(self, screen):
+    def __init__(self, fb_rect):
         self.image = pygame.image.load('content/player.png')
-        self.screen = screen
+        self.fb_rect = fb_rect
         self.pos = Vector3(
-            screen.get_width() / 2 - self.image.get_width() / 2,
-            screen.get_height() - self.image.get_height(), 0)
+            self.fb_rect.width / 2 - self.image.get_width() / 2,
+            self.fb_rect.height - self.image.get_height(), 0)
         self.draw_collider = False
         self.speed = 400.
-        self.image_scale = 2
-        self.collider_offset = Vector3(4, 9, 0) * self.image_scale
-        self.collider_size = Vector3(23, 19, 0) * self.image_scale
-        self.min_y = self.screen.get_height() - 200 - self.collider_offset.y
-        self.max_y = self.screen.get_height() - self.collider_offset.y - self.collider_size.y
+        self.collider_offset = Vector3(4, 9, 0)
+        self.collider_size = Vector3(23, 19, 0)
+        self.min_y = self.fb_rect.height - 100 - self.collider_offset.y
+        self.max_y = self.fb_rect.height - self.collider_offset.y - self.collider_size.y
         self.min_x = -self.collider_offset.x
-        self.max_x = self.screen.get_width() - self.collider_offset.x - self.collider_size.x
-        self.animation = Animation(Vector3(32, 32, 0) * self.image_scale, 2, 0.1)
+        self.max_x = self.fb_rect.width - self.collider_offset.x - self.collider_size.x
+        self.animation = Animation(Vector3(32, 32, 0), 2, 0.1)
 
-    def draw(self):
+    def draw(self, fb):
         if self.draw_collider:
             pygame.draw.rect(
-                self.screen, "red",
+                fb, "red",
                 pygame.Rect(self.pos.x + self.collider_offset.x,
                             self.pos.y + self.collider_offset.y,
                             self.collider_size.x,
                             self.collider_size.y))
-        self.screen.blit(self.image, (self.pos.x, self.pos.y), self.animation.frame_rectangle())
+        fb.blit(self.image, (self.pos.x, self.pos.y), self.animation.frame_rectangle())
 
     def update(self, delta_time):
         self.animation.update(delta_time)
@@ -57,4 +56,4 @@ class Player:
                 self.pos.y = self.max_y
 
     def rifle_tip(self):
-        return self.pos + Vector3(15.5 * self.image_scale, 5 * self.image_scale, 0)
+        return self.pos + Vector3(15.5, 4, 0)
