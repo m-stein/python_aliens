@@ -1,4 +1,4 @@
-from aliens import Aliens
+from game import Game
 
-aliens = Aliens()
-aliens.run_game()
+aliens = Game()
+aliens.run()

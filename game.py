@@ -2,9 +2,10 @@ import pygame
 import sys
 from player import Player
 from bullet import Bullet
+from alien import  Alien
 
 
-class Aliens:
+class Game:
 
     def __init__(self):
         pygame.init()
@@ -12,16 +13,18 @@ class Aliens:
         self.clock = pygame.time.Clock()
         self.bg_color = (25, 25, 25)
         self.player = Player(self.screen)
+        self.alien = Alien(self.screen)
         self.max_fps = 60
         self.bullets = []
         self.max_num_bullets = 3
         pygame.display.set_caption("Aliens!")
 
-    def run_game(self):
+    def run(self):
         while True:
             delta_time = self.clock.tick(self.max_fps) / 1000
             self._process_global_events()
             self.player.update(delta_time)
+            self.alien.update(delta_time)
             self._update_bullets(delta_time)
             self._update_screen()
 
@@ -39,6 +42,7 @@ class Aliens:
     def _update_screen(self):
         self.screen.fill(self.bg_color)
         self.player.draw()
+        self.alien.draw()
         for bullet in self.bullets:
             bullet.draw()
         pygame.display.flip()

@@ -17,7 +17,6 @@ class Bullet:
         self.pos.y -= self.speed * delta_time
 
     def draw(self):
-        """Draw players visual to the screen."""
         self.screen.blit(self.image, (self.pos.x, self.pos.y))
 
     def out_of_screen(self):
