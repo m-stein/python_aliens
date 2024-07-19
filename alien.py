@@ -1,5 +1,6 @@
 import pygame
-from vpython import vector as Vector3
+import numpy as np
+import vector2 as v2
 from animation import Animation
 
 
@@ -7,26 +8,26 @@ class Alien:
     def __init__(self, fb_rect):
         self.image = pygame.image.load('content/alien.png')
         self.fb_rect = fb_rect
-        self.pos = Vector3(100, 100, 0)
+        self.pos = np.array([100, 100])
         self.draw_collider = False
         self.speed = 400.
-        self.collider_offset = Vector3(5, 6, 0)
-        self.collider_size = Vector3(22, 13, 0)
-        self.animation = Animation(Vector3(32, 32, 0), 3, 0.1)
+        self.collider_offset = np.array([5, 6])
+        self.collider_size = np.array([22, 13])
+        self.animation = Animation(np.array([32, 32]), 3, 0.1)
 
     def draw(self, fb):
         if self.draw_collider:
             pygame.draw.rect(
                 fb, "red",
-                pygame.Rect(self.pos.x + self.collider_offset.x,
-                            self.pos.y + self.collider_offset.y,
-                            self.collider_size.x,
-                            self.collider_size.y))
-        fb.blit(self.image, (self.pos.x, self.pos.y), self.animation.frame_rectangle())
+                pygame.Rect(int(self.pos[0] + self.collider_offset[0]),
+                            int(self.pos[1] + self.collider_offset[1]),
+                            int(self.collider_size[0]),
+                            int(self.collider_size[1])))
+        fb.blit(self.image, (self.pos[0], self.pos[1]), self.animation.frame_rectangle())
 
     def update(self, delta_time):
         self.animation.update(delta_time)
-        direction = Vector3(0, 0, 0)
+        direction = np.array([0, 0])
 
-        if direction.mag > 0:
-            self.pos += direction.norm() * self.speed * delta_time
+        if v2.length(direction) > 0:
+            self.pos += v2.normalized(direction) * self.speed * delta_time

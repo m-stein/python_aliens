@@ -1,5 +1,5 @@
 import pygame
-from vpython import vector as Vector3
+import numpy as np
 
 
 class Bullet:
@@ -7,14 +7,14 @@ class Bullet:
         self.image = pygame.image.load('content/bullet.png')
         self.width = 3
         self.height = 7
-        self.pos = Vector3(rifle_tip.x - self.width / 2, rifle_tip.y - self.height, 0)
+        self.pos = np.array([rifle_tip[0] - self.width / 2, rifle_tip[1] - self.height])
         self.speed = 600.
 
     def update(self, delta_time):
-        self.pos.y -= self.speed * delta_time
+        self.pos[1] -= self.speed * delta_time
 
     def draw(self, fb):
-        fb.blit(self.image, (self.pos.x, self.pos.y))
+        fb.blit(self.image, (self.pos[0], self.pos[1]))
 
     def out_of_sight(self):
-        return self.pos.y < -self.height
+        return self.pos[1] < -self.height
