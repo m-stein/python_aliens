@@ -9,8 +9,8 @@ class Player:
         self.image = pygame.image.load('content/player.png')
         self.fb_rect = fb_rect
         self.pos = np.array(
-            [self.fb_rect.width / 2 - self.image.get_width() / 2,
-             self.fb_rect.height - self.image.get_height()])
+            [float(self.fb_rect.width / 2 - self.image.get_width() / 2),
+             float(self.fb_rect.height - self.image.get_height())])
         self.draw_collider = False
         self.speed = 300.
         self.collider_offset = np.array([4, 9])
