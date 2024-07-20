@@ -36,3 +36,9 @@ class Alien:
 
     def finished_maneuver(self):
         return self.pos[1] > self.fb_rect.height
+
+    def collider(self):
+        return pygame.Rect(int(self.pos[0] + self.collider_offset[0]),
+                           int(self.pos[1] + self.collider_offset[1]),
+                           int(self.collider_size[0]),
+                           int(self.collider_size[1]))

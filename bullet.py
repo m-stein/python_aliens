@@ -9,6 +9,8 @@ class Bullet:
         self.height = 7
         self.pos = np.array([rifle_tip[0] - self.width / 2, rifle_tip[1] - self.height])
         self.speed = 600.
+        self.collider_offset = np.array([0, 0])
+        self.collider_size = np.array([3, 7])
 
     def update(self, delta_time):
         self.pos[1] -= self.speed * delta_time
@@ -18,3 +20,9 @@ class Bullet:
 
     def out_of_sight(self):
         return self.pos[1] < -self.height
+
+    def collider(self):
+        return pygame.Rect(int(self.pos[0] + self.collider_offset[0]),
+                           int(self.pos[1] + self.collider_offset[1]),
+                           int(self.collider_size[0]),
+                           int(self.collider_size[1]))

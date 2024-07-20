@@ -34,8 +34,8 @@ class Game:
             for stars in self.stars_layers:
                 stars.update(delta_time)
             self.player.update(delta_time)
-            self.alien_fleet.update(delta_time)
             self._update_bullets(delta_time)
+            self.alien_fleet.update(delta_time, self.bullets)
             self._process_global_events()
             self._update_display()
 

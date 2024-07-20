@@ -8,11 +8,16 @@ class AlienFleet:
         self.spawn_time = 0.
         self.aliens = []
 
-    def update(self, delta_time):
+    def update(self, delta_time, bullets):
         for alien in self.aliens.copy():
             alien.update(delta_time)
             if alien.finished_maneuver():
                 self.aliens.remove(alien)
+            for bullet in bullets.copy():
+                if bullet.collider().colliderect(alien.collider()):
+                    self.aliens.remove(alien)
+                    bullets.remove(bullet)
+
         self.spawn_time += delta_time
         if self.spawn_time > self.spawn_period:
             self.aliens.append(Alien(self.fb_rect))
