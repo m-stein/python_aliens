@@ -2,7 +2,7 @@ import pygame
 import sys
 from player import Player
 from bullet import Bullet
-from alien import Alien
+from alien_fleet import AlienFleet
 from stars import Stars
 
 
@@ -16,7 +16,7 @@ class Game:
         self.clock = pygame.time.Clock()
         self.bg_color = (10, 10, 10)
         self.player = Player(self.fb_rect)
-        self.alien = Alien(self.fb_rect)
+        self.alien_fleet = AlienFleet(self.fb_rect)
         self.max_fps = 60
         self.bullets = []
         self.max_num_bullets = 3
@@ -34,7 +34,7 @@ class Game:
             for stars in self.stars_layers:
                 stars.update(delta_time)
             self.player.update(delta_time)
-            self.alien.update(delta_time)
+            self.alien_fleet.update(delta_time)
             self._update_bullets(delta_time)
             self._process_global_events()
             self._update_display()
@@ -55,7 +55,7 @@ class Game:
         for stars in self.stars_layers:
             stars.draw(self.fb)
         self.player.draw(self.fb)
-        self.alien.draw(self.fb)
+        self.alien_fleet.draw(self.fb)
         for bullet in self.bullets:
             bullet.draw(self.fb)
         fb = pygame.transform.scale(self.fb, self.fb_blit_rect.size)

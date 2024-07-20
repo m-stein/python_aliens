@@ -33,3 +33,6 @@ class Alien:
         self.animation.update(delta_time)
         self.pos[1] = float(float(self.pos[1]) + self.y_speed * delta_time)
         self.pos[0] = self.curve_ampl_factor * np.sin((self.pos[1] - self.curve_vertical_shift) * self.curve_freq_factor) + self.curve_horizontal_shift
+
+    def finished_maneuver(self):
+        return self.pos[1] > self.fb_rect.height
