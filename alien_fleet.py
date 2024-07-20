@@ -8,7 +8,7 @@ class AlienFleet:
         self.spawn_time = 0.
         self.aliens = []
 
-    def update(self, delta_time, bullets):
+    def update(self, delta_time, bullets, score):
         for alien in self.aliens.copy():
             alien.update(delta_time)
             if alien.finished_maneuver():
@@ -17,6 +17,7 @@ class AlienFleet:
                 if bullet.collider().colliderect(alien.collider()):
                     self.aliens.remove(alien)
                     bullets.remove(bullet)
+                    score.increment()
 
         self.spawn_time += delta_time
         if self.spawn_time > self.spawn_period:

@@ -4,6 +4,7 @@ from player import Player
 from bullet import Bullet
 from alien_fleet import AlienFleet
 from stars import Stars
+from score import Score
 
 
 class Game:
@@ -15,6 +16,7 @@ class Game:
         self.fb = pygame.surface.Surface((self.fb_rect.width, self.fb_rect.height))
         self.clock = pygame.time.Clock()
         self.bg_color = (10, 10, 10)
+        self.score = Score()
         self.player = Player(self.fb_rect)
         self.alien_fleet = AlienFleet(self.fb_rect)
         self.max_fps = 60
@@ -35,7 +37,8 @@ class Game:
                 stars.update(delta_time)
             self.player.update(delta_time)
             self._update_bullets(delta_time)
-            self.alien_fleet.update(delta_time, self.bullets)
+            self.alien_fleet.update(delta_time, self.bullets, self.score)
+            self.score.update(delta_time)
             self._process_global_events()
             self._update_display()
 
@@ -58,6 +61,7 @@ class Game:
         self.alien_fleet.draw(self.fb)
         for bullet in self.bullets:
             bullet.draw(self.fb)
+        self.score.draw(self.fb)
         fb = pygame.transform.scale(self.fb, self.fb_blit_rect.size)
         self.display.blit(fb, self.fb_blit_rect.topleft)
         pygame.display.update()
