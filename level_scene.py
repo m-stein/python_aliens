@@ -7,6 +7,7 @@ from bullet import *
 
 class LevelScene:
     def __init__(self, fb_rect):
+        self.name = "level"
         self.bg_color = (10, 10, 10)
         self.score = Score()
         self.player = Player(fb_rect)

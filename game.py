@@ -1,5 +1,6 @@
 import sys
 from level_scene import *
+from intro_scene import *
 
 
 class Game:
@@ -11,14 +12,14 @@ class Game:
         self.fb_blit_rect = self.fb_rect.fit(self.display.get_rect())
         self.clock = pygame.time.Clock()
         self.max_fps = 60
-        self.scene = LevelScene(self.fb_rect)
+        self.scene = IntroScene(self.fb_rect)
         pygame.display.set_caption("Aliens!")
 
     def run(self):
         while True:
             delta_time = self.clock.tick(self.max_fps) / 1000
-            self.scene.update(delta_time)
             self._handle_events()
+            self.scene.update(delta_time)
             self._update_display()
 
     def _handle_events(self):
@@ -29,6 +30,8 @@ class Game:
                 if event.key == pygame.K_q:
                     sys.exit()
             self.scene.handle_event(event)
+            if self.scene.name == "intro" and event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
+                self.scene = LevelScene(self.fb_rect)
 
     def _update_display(self):
         self.scene.draw(self.fb)
