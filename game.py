@@ -1,5 +1,6 @@
 import sys
 import pygame
+import logging
 from level_scene import LevelScene
 from intro_scene import IntroScene
 
@@ -19,6 +20,13 @@ class Game:
     def run(self):
         while True:
             delta_time = self.clock.tick(self.max_fps) / 1000
+            if self.scene.finished:
+                if self.scene.next_scene is LevelScene:
+                    self.scene = LevelScene(self.fb_rect)
+                else:
+                    logging.info("failed to determine next scene, exiting")
+                    sys.exit()
+
             self._handle_events()
             self.scene.update(delta_time)
             self._update_display()
@@ -31,8 +39,6 @@ class Game:
                 if event.key == pygame.K_ESCAPE:
                     sys.exit()
             self.scene.handle_event(event)
-            if isinstance(self.scene, IntroScene) and event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
-                self.scene = LevelScene(self.fb_rect)
 
     def _update_display(self):
         self.scene.draw(self.fb)

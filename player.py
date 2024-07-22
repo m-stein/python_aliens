@@ -58,3 +58,9 @@ class Player:
 
     def rifle_tip(self):
         return self.pos + np.array([15.5, 4])
+
+    def collider(self):
+        return pygame.Rect(int(self.pos[0] + self.collider_offset[0]),
+                           int(self.pos[1] + self.collider_offset[1]),
+                           int(self.collider_size[0]),
+                           int(self.collider_size[1]))

@@ -1,10 +1,13 @@
 import numpy as np
 import pygame
+from level_scene import LevelScene
 from stars import Stars
+from scene import Scene
 
 
-class IntroScene:
+class IntroScene(Scene):
     def __init__(self, fb_rect):
+        super().__init__(next_scene=LevelScene)
         self.bg_color = (10, 10, 10)
         self.stars_layers = [
             Stars(0.9, 60, fb_rect.height),
@@ -16,7 +19,8 @@ class IntroScene:
         self.title_pos = np.array([fb_rect.width / 2 - self.title_surface.get_width() / 2, fb_rect.height / 2 - self.title_surface.get_height() / 2])
 
     def handle_event(self, event):
-        pass
+        if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
+            self.finished = True
 
     def update(self, delta_time):
         for stars in self.stars_layers:

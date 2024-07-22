@@ -1,4 +1,5 @@
 import pygame
+from scene import Scene
 from player import Player
 from alien_fleet import AlienFleet
 from stars import Stars
@@ -6,8 +7,9 @@ from score import Score
 from bullet import Bullet
 
 
-class LevelScene:
+class LevelScene(Scene):
     def __init__(self, fb_rect):
+        super().__init__()
         self.bg_color = (10, 10, 10)
         self.score = Score()
         self.player = Player(fb_rect)
