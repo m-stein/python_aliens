@@ -3,9 +3,10 @@ from alien import Alien
 
 
 class AlienFleet:
-    def __init__(self, fb_rect, alien_bullets):
+    def __init__(self, fb_rect, alien_bullets, accuracy_bonus):
         self.fb_rect = fb_rect
         self.alien_bullets = alien_bullets
+        self.accuracy_bonus = accuracy_bonus
         self.spawn_timeout = None
         self.spawn_timeout = self._new_spawn_timeout()
         self.aliens = []
@@ -19,7 +20,8 @@ class AlienFleet:
                 if bullet.collider().colliderect(alien.collider()):
                     self.aliens.remove(alien)
                     bullets.remove(bullet)
-                    score.increment()
+                    score.increment_by(5 + self.accuracy_bonus[0])
+                    self.accuracy_bonus[0] += 2
 
         if self.spawn_timeout > delta_time:
             self.spawn_timeout -= delta_time

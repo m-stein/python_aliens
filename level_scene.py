@@ -24,13 +24,14 @@ class LevelScene(Scene):
         self.lives = Lives(fb_rect)
         self.player = Player(fb_rect)
         self.alien_bullets = []
-        self.alien_fleet = AlienFleet(fb_rect, self.alien_bullets)
+        self.accuracy_bonus = [0]
+        self.alien_fleet = AlienFleet(fb_rect, self.alien_bullets, self.accuracy_bonus)
         self.bullets = []
         self.max_num_bullets = 3
         self.stars_layers = [
-            Stars(0.9, 60, fb_rect.height),
-            Stars(0.7, 40, fb_rect.height),
-            Stars(0.5, 20, fb_rect.height),
+            Stars(0.5, 30, fb_rect.height),
+            Stars(0.3, 20, fb_rect.height),
+            Stars(0.2, 10, fb_rect.height),
         ]
         self.game_over_font = pygame.font.SysFont('Carlito Bold', 40)
         self.game_over_surface = self.game_over_font.render("GAME OVER!", True, "White")
@@ -53,10 +54,11 @@ class LevelScene(Scene):
         self.alien_fleet.update(delta_time, self.bullets, self.score)
         if self.state == LevelState.RUNNING:
             self._update_player(delta_time)
-        self.score.update(delta_time)
+        self.score.update(self.accuracy_bonus[0])
         self.lives.update(delta_time)
 
     def _hit_player(self):
+        self.accuracy_bonus[0] = 0
         if self.lives.consume_a_life():
             self.player.respawn()
         else:
@@ -78,6 +80,8 @@ class LevelScene(Scene):
             bullet.update(delta_time)
             if bullet.out_of_sight():
                 self.bullets.remove(bullet)
+                if self.accuracy_bonus[0] > 0:
+                    self.accuracy_bonus[0] -= 1
         for bullet in self.alien_bullets.copy():
             bullet.update(delta_time)
             if bullet.out_of_sight():

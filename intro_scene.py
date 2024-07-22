@@ -9,9 +9,9 @@ class IntroScene(Scene):
         super().__init__(next_scene="level")
         self.bg_color = (10, 10, 10)
         self.stars_layers = [
-            Stars(0.9, 60, fb_rect.height),
-            Stars(0.7, 40, fb_rect.height),
-            Stars(0.5, 20, fb_rect.height),
+            Stars(0.5, 30, fb_rect.height),
+            Stars(0.3, 20, fb_rect.height),
+            Stars(0.2, 10, fb_rect.height),
         ]
         self.title_font = pygame.font.SysFont('Carlito Bold', 40)
         self.title_surface = self.title_font.render(f"A L I E N S !", True, "White")
