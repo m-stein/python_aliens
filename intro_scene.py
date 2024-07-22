@@ -1,13 +1,12 @@
 import numpy as np
 import pygame
-from level_scene import LevelScene
 from stars import Stars
 from scene import Scene
 
 
 class IntroScene(Scene):
     def __init__(self, fb_rect):
-        super().__init__(next_scene=LevelScene)
+        super().__init__(next_scene="level")
         self.bg_color = (10, 10, 10)
         self.stars_layers = [
             Stars(0.9, 60, fb_rect.height),

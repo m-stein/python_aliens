@@ -21,11 +21,14 @@ class Game:
         while True:
             delta_time = self.clock.tick(self.max_fps) / 1000
             if self.scene.finished:
-                if self.scene.next_scene is LevelScene:
-                    self.scene = LevelScene(self.fb_rect)
-                else:
-                    logging.info("failed to determine next scene, exiting")
-                    sys.exit()
+                match self.scene.next_scene:
+                    case "level":
+                        self.scene = LevelScene(self.fb_rect)
+                    case "intro":
+                        self.scene = IntroScene(self.fb_rect)
+                    case _:
+                        logging.info("failed to determine next scene, exiting")
+                        sys.exit()
 
             self._handle_events()
             self.scene.update(delta_time)

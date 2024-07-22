@@ -9,7 +9,7 @@ from bullet import Bullet
 
 class LevelScene(Scene):
     def __init__(self, fb_rect):
-        super().__init__()
+        super().__init__(next_scene="intro")
         self.bg_color = (10, 10, 10)
         self.score = Score()
         self.player = Player(fb_rect)
@@ -33,6 +33,9 @@ class LevelScene(Scene):
         self.player.update(delta_time)
         self._update_bullets(delta_time)
         self.alien_fleet.update(delta_time, self.bullets, self.score)
+        for alien in self.alien_fleet.aliens:
+            if alien.collider().colliderect(self.player.collider()):
+                self.finished = True
         self.score.update(delta_time)
 
     def _update_bullets(self, delta_time):
