@@ -6,7 +6,7 @@ from animation import Animation
 
 class Player:
     def __init__(self, fb_rect):
-        self.image = pygame.image.load('content/player.png').convert()
+        self.image = pygame.image.load('content/player.png').convert_alpha()
         self.fb_rect = fb_rect
         self.pos = np.array(
             [float(self.fb_rect.width / 2 - self.image.get_width() / 2),

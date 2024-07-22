@@ -4,7 +4,7 @@ import numpy as np
 
 class Bullet:
     def __init__(self, rifle_tip):
-        self.image = pygame.image.load('content/bullet.png').convert()
+        self.image = pygame.image.load('content/bullet.png').convert_alpha()
         self.width = 3
         self.height = 7
         self.pos = np.array([rifle_tip[0] - self.width / 2, rifle_tip[1] - self.height])

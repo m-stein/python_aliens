@@ -6,7 +6,7 @@ from animation import Animation
 
 class Alien:
     def __init__(self, fb_rect):
-        self.image = pygame.image.load('content/alien.png').convert()
+        self.image = pygame.image.load('content/alien.png').convert_alpha()
         self.fb_rect = fb_rect
         self.pos = np.array([0., -self.image.get_height()])
         self.draw_collider = False
