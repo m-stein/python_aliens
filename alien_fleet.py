@@ -4,7 +4,7 @@ from alien import Alien
 class AlienFleet:
     def __init__(self, fb_rect):
         self.fb_rect = fb_rect
-        self.spawn_period = 2.
+        self.spawn_period = 1.
         self.spawn_time = 0.
         self.aliens = []
 

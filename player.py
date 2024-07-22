@@ -3,7 +3,12 @@ import numpy as np
 import vector2 as v2
 from animation import Animation
 from blink import Blink
+from enum import Enum
 
+
+class PlayerState(Enum):
+    ALIVE = 0
+    RESPAWNING = 1
 
 class Player:
     def __init__(self, fb_rect):
@@ -21,42 +26,47 @@ class Player:
         self.min_x = -self.collider_offset[0]
         self.max_x = self.fb_rect.width - self.collider_offset[0] - self.collider_size[0]
         self.animation = Animation(np.array([32, 32]), 2, 0.1)
-        self.max_respawning_timeout = 3
+        self.max_respawning_timeout = 2
+        self.respawning_blink = Blink(.15, False)
         self.pos = None
-        self.blink = None
+        self.state = None
         self.respawning_timeout = None
         self.respawn()
 
-    def draw(self, fb):
-        if self.blink and not self.blink.value:
-            return
+    def _draw_ship(self, fb):
         if self.draw_collider:
-            pygame.draw.rect(
-                fb, "red",
-                pygame.Rect(int(self.pos[0] + self.collider_offset[0]),
-                            int(self.pos[1] + self.collider_offset[1]),
-                            int(self.collider_size[0]),
-                            int(self.collider_size[1])))
-
+            pygame.draw.rect(fb, "red", self.collider())
         fb.blit(self.image, (self.pos[0], self.pos[1]), self.animation.frame_rectangle())
 
-    def update(self, delta_time):
-        if self.blink:
-            self.blink.update(delta_time)
-        if self.respawning_timeout > 0:
-            if self.respawning_timeout > delta_time:
-                self.respawning_timeout -= delta_time
-            else:
-                self.respawning_timeout = 0
-                self.blink = None
-                self.image.set_alpha(256)
+    def draw(self, fb):
+        match self.state:
+            case PlayerState.ALIVE:
+                self._draw_ship(fb)
+            case PlayerState.RESPAWNING:
+                if self.respawning_blink.value:
+                    self._draw_ship(fb)
 
-        self._update_position(delta_time)
-        self.animation.update(delta_time)
+    def _update_respawning_timeout(self, delta_time):
+        if self.respawning_timeout > delta_time:
+            self.respawning_timeout -= delta_time
+        else:
+            self.respawning_timeout = 0
+            self.image.set_alpha(256)
+            self.state = PlayerState.ALIVE
+
+    def update(self, delta_time):
+        match self.state:
+            case PlayerState.ALIVE:
+                self._update_position(delta_time)
+                self.animation.update(delta_time)
+            case PlayerState.RESPAWNING:
+                self._update_position(delta_time)
+                self.animation.update(delta_time)
+                self.respawning_blink.update(delta_time)
+                self._update_respawning_timeout(delta_time)
 
     def _update_position(self, delta_time):
         key_pressed = pygame.key.get_pressed()
-
         direction = np.array([0, 0])
         if key_pressed[pygame.K_LEFT]:
             direction[0] -= 1
@@ -66,7 +76,6 @@ class Player:
             direction[1] -= 1
         if key_pressed[pygame.K_DOWN]:
             direction[1] += 1
-
         if v2.length(direction) > 0:
             self.pos += v2.normalized(direction) * self.speed * delta_time
             if self.pos[0] < self.min_x:
@@ -88,13 +97,14 @@ class Player:
                            int(self.collider_size[1]))
 
     def vulnerable(self):
-        return self.respawning_timeout == 0
+        return self.state == PlayerState.ALIVE
 
     def ready_to_shoot(self):
-        return self.respawning_timeout == 0
+        return self.state == PlayerState.ALIVE
 
     def respawn(self):
         self.pos = self.respawn_pos.copy()
-        self.blink = Blink(.15, False)
+        self.respawning_blink.reset()
         self.image.set_alpha(128)
         self.respawning_timeout = self.max_respawning_timeout
+        self.state = PlayerState.RESPAWNING
