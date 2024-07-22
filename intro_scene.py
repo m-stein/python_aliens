@@ -1,10 +1,10 @@
 import numpy as np
-from stars import *
+import pygame
+from stars import Stars
 
 
 class IntroScene:
     def __init__(self, fb_rect):
-        self.name = "intro"
         self.bg_color = (10, 10, 10)
         self.stars_layers = [
             Stars(0.9, 60, fb_rect.height),

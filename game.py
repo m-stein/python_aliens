@@ -1,6 +1,7 @@
 import sys
-from level_scene import *
-from intro_scene import *
+import pygame
+from level_scene import LevelScene
+from intro_scene import IntroScene
 
 
 class Game:
@@ -27,10 +28,10 @@ class Game:
             if event.type == pygame.QUIT:
                 sys.exit()
             elif event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_q:
+                if event.key == pygame.K_ESCAPE:
                     sys.exit()
             self.scene.handle_event(event)
-            if self.scene.name == "intro" and event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
+            if isinstance(self.scene, IntroScene) and event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
                 self.scene = LevelScene(self.fb_rect)
 
     def _update_display(self):

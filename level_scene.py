@@ -1,13 +1,13 @@
-from player import *
-from alien_fleet import *
-from stars import *
-from score import *
-from bullet import *
+import pygame
+from player import Player
+from alien_fleet import AlienFleet
+from stars import Stars
+from score import Score
+from bullet import Bullet
 
 
 class LevelScene:
     def __init__(self, fb_rect):
-        self.name = "level"
         self.bg_color = (10, 10, 10)
         self.score = Score()
         self.player = Player(fb_rect)
