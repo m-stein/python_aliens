@@ -23,7 +23,8 @@ class LevelScene(Scene):
         self.score = Score()
         self.lives = Lives(fb_rect)
         self.player = Player(fb_rect)
-        self.alien_fleet = AlienFleet(fb_rect)
+        self.alien_bullets = []
+        self.alien_fleet = AlienFleet(fb_rect, self.alien_bullets)
         self.bullets = []
         self.max_num_bullets = 3
         self.stars_layers = [
@@ -55,33 +56,46 @@ class LevelScene(Scene):
         self.score.update(delta_time)
         self.lives.update(delta_time)
 
+    def _hit_player(self):
+        if self.lives.consume_a_life():
+            self.player.respawn()
+        else:
+            self.state = LevelState.GAME_OVER
+
     def _update_player(self, delta_time):
         self.player.update(delta_time)
         if self.player.vulnerable():
             for alien in self.alien_fleet.aliens:
                 if alien.collider().colliderect(self.player.collider()):
-                    if self.lives.consume_a_life():
-                        self.player.respawn()
-                    else:
-                        self.state = LevelState.GAME_OVER
+                    self._hit_player()
+            for bullet in self.alien_bullets.copy():
+                if bullet.collider().colliderect(self.player.collider()):
+                    self._hit_player()
+                    self.alien_bullets.remove(bullet)
 
     def _update_bullets(self, delta_time):
         for bullet in self.bullets.copy():
             bullet.update(delta_time)
             if bullet.out_of_sight():
                 self.bullets.remove(bullet)
+        for bullet in self.alien_bullets.copy():
+            bullet.update(delta_time)
+            if bullet.out_of_sight():
+                self.alien_bullets.remove(bullet)
 
     def draw(self, fb):
         fb.fill(self.bg_color)
         for stars in self.stars_layers:
             stars.draw(fb)
+        for bullet in self.bullets:
+            bullet.draw(fb)
+        for bullet in self.alien_bullets:
+            bullet.draw(fb)
+        self.alien_fleet.draw(fb)
         match self.state:
             case LevelState.RUNNING:
                 self.player.draw(fb)
             case LevelState.GAME_OVER:
                 fb.blit(self.game_over_surface, (self.game_over_pos[0], self.game_over_pos[1]))
-        self.alien_fleet.draw(fb)
-        for bullet in self.bullets:
-            bullet.draw(fb)
         self.score.draw(fb)
         self.lives.draw(fb)

@@ -1,11 +1,13 @@
+import numpy as np
 from alien import Alien
 
 
 class AlienFleet:
-    def __init__(self, fb_rect):
+    def __init__(self, fb_rect, alien_bullets):
         self.fb_rect = fb_rect
-        self.spawn_period = 1.
-        self.spawn_time = 0.
+        self.alien_bullets = alien_bullets
+        self.spawn_timeout = None
+        self.spawn_timeout = self._new_spawn_timeout()
         self.aliens = []
 
     def update(self, delta_time, bullets, score):
@@ -19,10 +21,14 @@ class AlienFleet:
                     bullets.remove(bullet)
                     score.increment()
 
-        self.spawn_time += delta_time
-        if self.spawn_time > self.spawn_period:
-            self.aliens.append(Alien(self.fb_rect))
-            self.spawn_time %= self.spawn_period
+        if self.spawn_timeout > delta_time:
+            self.spawn_timeout -= delta_time
+        else:
+            self.aliens.append(Alien(self.fb_rect, self.alien_bullets))
+            self.spawn_timeout = self._new_spawn_timeout()
+
+    def _new_spawn_timeout(self):
+        return np.random.uniform(.5, 1.5)
 
     def draw(self, fb):
         for alien in self.aliens:
