@@ -1,4 +1,6 @@
 import pygame
+
+from lives import Lives
 from scene import Scene
 from player import Player
 from alien_fleet import AlienFleet
@@ -12,6 +14,7 @@ class LevelScene(Scene):
         super().__init__(next_scene="intro")
         self.bg_color = (10, 10, 10)
         self.score = Score()
+        self.lives = Lives(fb_rect)
         self.player = Player(fb_rect)
         self.alien_fleet = AlienFleet(fb_rect)
         self.bullets = []
@@ -23,8 +26,8 @@ class LevelScene(Scene):
         ]
 
     def handle_event(self, event):
-        if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
-            if len(self.bullets) < self.max_num_bullets:
+        if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE :
+            if self.player.ready_to_shoot() and len(self.bullets) < self.max_num_bullets:
                 self.bullets.append(Bullet(self.player.rifle_tip()))
 
     def update(self, delta_time):
@@ -33,10 +36,15 @@ class LevelScene(Scene):
         self.player.update(delta_time)
         self._update_bullets(delta_time)
         self.alien_fleet.update(delta_time, self.bullets, self.score)
-        for alien in self.alien_fleet.aliens:
-            if alien.collider().colliderect(self.player.collider()):
-                self.finished = True
+        if self.player.vulnerable():
+            for alien in self.alien_fleet.aliens:
+                if alien.collider().colliderect(self.player.collider()):
+                    if self.lives.consume_a_life():
+                        self.player.respawn()
+                    else:
+                        self.finished = True
         self.score.update(delta_time)
+        self.lives.update(delta_time)
 
     def _update_bullets(self, delta_time):
         for bullet in self.bullets.copy():
@@ -53,3 +61,4 @@ class LevelScene(Scene):
         for bullet in self.bullets:
             bullet.draw(fb)
         self.score.draw(fb)
+        self.lives.draw(fb)

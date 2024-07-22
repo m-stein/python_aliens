@@ -13,7 +13,7 @@ class Alien:
         self.collider_offset = np.array([5, 6])
         self.collider_size = np.array([22, 13])
         self.animation = Animation(np.array([32, 32]), 3, 0.1)
-        self.y_speed = float(50)
+        self.y_speed = float(20)
         self.curve_freq_factor = 1 / self.y_speed
         self.curve_ampl_factor = self.fb_rect.width / 2 - self.animation.frame_size[0] / 2
         self.curve_horizontal_shift = -self.animation.frame_size[0] / 2 + self.fb_rect.width / 2

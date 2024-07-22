@@ -2,13 +2,14 @@ import pygame
 import numpy as np
 import vector2 as v2
 from animation import Animation
+from blink import Blink
 
 
 class Player:
     def __init__(self, fb_rect):
         self.image = pygame.image.load('content/player.png').convert_alpha()
         self.fb_rect = fb_rect
-        self.pos = np.array(
+        self.respawn_pos = np.array(
             [float(self.fb_rect.width / 2 - self.image.get_width() / 2),
              float(self.fb_rect.height - self.image.get_height())])
         self.draw_collider = False
@@ -20,8 +21,15 @@ class Player:
         self.min_x = -self.collider_offset[0]
         self.max_x = self.fb_rect.width - self.collider_offset[0] - self.collider_size[0]
         self.animation = Animation(np.array([32, 32]), 2, 0.1)
+        self.max_respawning_timeout = 3
+        self.pos = None
+        self.blink = None
+        self.respawning_timeout = None
+        self.respawn()
 
     def draw(self, fb):
+        if self.blink and not self.blink.value:
+            return
         if self.draw_collider:
             pygame.draw.rect(
                 fb, "red",
@@ -29,10 +37,24 @@ class Player:
                             int(self.pos[1] + self.collider_offset[1]),
                             int(self.collider_size[0]),
                             int(self.collider_size[1])))
+
         fb.blit(self.image, (self.pos[0], self.pos[1]), self.animation.frame_rectangle())
 
     def update(self, delta_time):
+        if self.blink:
+            self.blink.update(delta_time)
+        if self.respawning_timeout > 0:
+            if self.respawning_timeout > delta_time:
+                self.respawning_timeout -= delta_time
+            else:
+                self.respawning_timeout = 0
+                self.blink = None
+                self.image.set_alpha(256)
+
+        self._update_position(delta_time)
         self.animation.update(delta_time)
+
+    def _update_position(self, delta_time):
         key_pressed = pygame.key.get_pressed()
 
         direction = np.array([0, 0])
@@ -64,3 +86,15 @@ class Player:
                            int(self.pos[1] + self.collider_offset[1]),
                            int(self.collider_size[0]),
                            int(self.collider_size[1]))
+
+    def vulnerable(self):
+        return self.respawning_timeout == 0
+
+    def ready_to_shoot(self):
+        return self.respawning_timeout == 0
+
+    def respawn(self):
+        self.pos = self.respawn_pos.copy()
+        self.blink = Blink(.15, False)
+        self.image.set_alpha(128)
+        self.respawning_timeout = self.max_respawning_timeout
