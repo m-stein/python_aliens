@@ -53,7 +53,7 @@ class Alien:
             case AlienState.EXPLODING:
                 if self.explosion_animation.frame < 15:
                     self._draw_ship(fb)
-                fb.blit(self.explosion_img, (self.pos[0], self.pos[1]), self.explosion_animation.frame_rectangle())
+                fb.blit(self.explosion_img, (self.pos[0] + 1, self.pos[1]), self.explosion_animation.frame_rectangle())
             case AlienState.DESTROYED:
                 pass
 
