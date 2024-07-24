@@ -10,6 +10,7 @@ class PlayerState(Enum):
     ALIVE = 0
     RESPAWNING = 1
 
+
 class Player:
     def __init__(self, fb_rect):
         self.image = pygame.image.load('content/player.png').convert_alpha()
@@ -19,8 +20,8 @@ class Player:
              float(self.fb_rect.height - self.image.get_height())])
         self.draw_collider = False
         self.speed = 300.
-        self.collider_offset = np.array([4, 9])
-        self.collider_size = np.array([23, 19])
+        self.collider_offset = np.array([10, 7])
+        self.collider_size = np.array([11, 17])
         self.min_y = self.fb_rect.height - 100 - self.collider_offset[1]
         self.max_y = self.fb_rect.height - self.collider_offset[1] - self.collider_size[1]
         self.min_x = -self.collider_offset[0]

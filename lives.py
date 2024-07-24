@@ -1,9 +1,10 @@
 import pygame
 import numpy as np
 
+
 class Lives:
     def __init__(self, fb_rect):
-        self.max_count = 3
+        self.max_count = 0
         self.count = self.max_count
         self.image = pygame.image.load('content/player.png').convert_alpha()
         self.image_src_rect = pygame.rect.Rect(0, 0, 32, 32)

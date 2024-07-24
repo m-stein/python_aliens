@@ -8,8 +8,11 @@ class LinearFader:
         self.finished = False
 
     def update(self, delta_time):
-        if self.time <= self.duration:
+        if self.finished:
+            return
+        if self.duration - self.time > delta_time:
             self.time += delta_time
-            self.value = self.end * self.time / self.duration
+            self.value = self.start + (self.end - self.start) * self.time / self.duration
         else:
             self.finished = True
+            self.value = self.end

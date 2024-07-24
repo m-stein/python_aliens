@@ -1,5 +1,6 @@
 import pygame
 
+
 class Score:
     def __init__(self):
         self.surface = None
@@ -14,3 +15,4 @@ class Score:
 
     def increment_by(self, value):
         self.value += value
+

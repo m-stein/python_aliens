@@ -14,14 +14,15 @@ class AlienFleet:
     def update(self, delta_time, bullets, score):
         for alien in self.aliens.copy():
             alien.update(delta_time)
-            if alien.finished_maneuver():
+            if alien.finished_maneuver() or alien.destroyed():
                 self.aliens.remove(alien)
-            for bullet in bullets.copy():
-                if bullet.collider().colliderect(alien.collider()):
-                    self.aliens.remove(alien)
-                    bullets.remove(bullet)
-                    score.increment_by(5 + self.accuracy_bonus[0])
-                    self.accuracy_bonus[0] += 2
+            if alien.vulnerable():
+                for bullet in bullets.copy():
+                    if bullet.collider().colliderect(alien.collider()):
+                        alien.explode()
+                        bullets.remove(bullet)
+                        score.increment_by(5 + self.accuracy_bonus[0])
+                        self.accuracy_bonus[0] += 2
 
         if self.spawn_timeout > delta_time:
             self.spawn_timeout -= delta_time
@@ -29,7 +30,8 @@ class AlienFleet:
             self.aliens.append(Alien(self.fb_rect, self.alien_bullets))
             self.spawn_timeout = self._new_spawn_timeout()
 
-    def _new_spawn_timeout(self):
+    @staticmethod
+    def _new_spawn_timeout():
         return np.random.uniform(.5, 1.5)
 
     def draw(self, fb):

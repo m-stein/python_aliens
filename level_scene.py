@@ -1,5 +1,4 @@
 import pygame
-import numpy as np
 from lives import Lives
 from scene import Scene
 from player import Player
@@ -8,6 +7,7 @@ from stars import Stars
 from score import Score
 from bullet import Bullet
 from enum import Enum
+from game_over_screen import GameOverScreen
 
 
 class LevelState(Enum):
@@ -28,14 +28,12 @@ class LevelScene(Scene):
         self.alien_fleet = AlienFleet(fb_rect, self.alien_bullets, self.accuracy_bonus)
         self.bullets = []
         self.max_num_bullets = 3
+        self.game_over_screen = GameOverScreen(fb_rect)
         self.stars_layers = [
             Stars(0.5, 30, fb_rect.height),
             Stars(0.3, 20, fb_rect.height),
             Stars(0.2, 10, fb_rect.height),
         ]
-        self.game_over_font = pygame.font.SysFont('Carlito Bold', 40)
-        self.game_over_surface = self.game_over_font.render("GAME OVER!", True, "White")
-        self.game_over_pos = np.array([fb_rect.width / 2 - self.game_over_surface.get_width() / 2, fb_rect.height / 2 - self.game_over_surface.get_height() / 2])
 
     def handle_event(self, event):
         match self.state:
@@ -44,16 +42,20 @@ class LevelScene(Scene):
                     if self.player.ready_to_shoot() and len(self.bullets) < self.max_num_bullets:
                         self.bullets.append(Bullet(self.player.rifle_tip()))
             case LevelState.GAME_OVER:
-                if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
-                    self.finished = True
+                if self.game_over_screen.fader.finished:
+                    if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
+                        self.finished = True
 
     def update(self, delta_time):
         for stars in self.stars_layers:
             stars.update(delta_time)
         self._update_bullets(delta_time)
         self.alien_fleet.update(delta_time, self.bullets, self.score)
-        if self.state == LevelState.RUNNING:
-            self._update_player(delta_time)
+        match self.state:
+            case LevelState.RUNNING:
+                self._update_player(delta_time)
+            case LevelState.GAME_OVER:
+                self.game_over_screen.update(delta_time)
         self.score.update(self.accuracy_bonus[0])
         self.lives.update(delta_time)
 
@@ -100,6 +102,6 @@ class LevelScene(Scene):
             case LevelState.RUNNING:
                 self.player.draw(fb)
             case LevelState.GAME_OVER:
-                fb.blit(self.game_over_surface, (self.game_over_pos[0], self.game_over_pos[1]))
+                self.game_over_screen.draw(fb)
         self.score.draw(fb)
         self.lives.draw(fb)
