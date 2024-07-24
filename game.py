@@ -16,6 +16,7 @@ class Game:
         self.max_fps = 60
         self.scene = IntroScene(self.fb_rect)
         pygame.display.set_caption("Aliens!")
+        pygame.mouse.set_visible(False)
 
     def run(self):
         while True:
