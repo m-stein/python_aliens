@@ -13,8 +13,8 @@ class AlienState(Enum):
 
 class Alien:
     def __init__(self, fb_rect, alien_bullets):
-        self.image = pygame.image.load('content/alien.png').convert_alpha()
-        self.explosion_img = pygame.image.load('content/explosion.png').convert_alpha()
+        self.image = pygame.image.load('images/alien.png').convert_alpha()
+        self.explosion_img = pygame.image.load('images/explosion.png').convert_alpha()
         self.state = AlienState.ALIVE
         self.fb_rect = fb_rect
         self.pos = np.array([0., -self.image.get_height()])

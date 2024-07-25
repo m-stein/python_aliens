@@ -13,7 +13,7 @@ class PlayerState(Enum):
 
 class Player:
     def __init__(self, fb_rect):
-        self.image = pygame.image.load('content/player.png').convert_alpha()
+        self.image = pygame.image.load('images/player.png').convert_alpha()
         self.fb_rect = fb_rect
         self.respawn_pos = np.array(
             [float(self.fb_rect.width / 2 - self.image.get_width() / 2),

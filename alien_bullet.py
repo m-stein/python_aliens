@@ -5,7 +5,7 @@ from animation import Animation
 
 class AlienBullet:
     def __init__(self, rifle_tip, fb_height):
-        self.image = pygame.image.load('content/alien_bullet.png').convert_alpha()
+        self.image = pygame.image.load('images/alien_bullet.png').convert_alpha()
         self.width = 8
         self.height = 8
         self.fb_height = fb_height
