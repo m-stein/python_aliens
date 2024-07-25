@@ -1,6 +1,7 @@
 import sys
 import pygame
 import logging
+import music
 from level_scene import LevelScene
 from intro_scene import IntroScene
 
@@ -15,6 +16,7 @@ class Game:
         self.clock = pygame.time.Clock()
         self.max_fps = 60
         self.scene = IntroScene(self.fb_rect)
+        music.play_battle_theme()
         pygame.display.set_caption("Aliens!")
         pygame.mouse.set_visible(False)
 
@@ -26,6 +28,7 @@ class Game:
                     case "level":
                         self.scene = LevelScene(self.fb_rect)
                     case "intro":
+                        music.play_battle_theme()
                         self.scene = IntroScene(self.fb_rect)
                     case _:
                         logging.info("failed to determine next scene, exiting")

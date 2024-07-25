@@ -16,7 +16,7 @@ class IntroScene(Scene):
             Stars(0.2, 10, fb_rect.height),
         ]
         self.title_fader = LinearFader(0, 256, 3)
-        self.title_font = pygame.font.SysFont('Carlito Bold', 40)
+        self.title_font = pygame.font.SysFont('Carlito Bold', 50)
         self.title_surface = self.title_font.render(f"A L I E N S !", True, "White")
         self.title_pos = np.array(
             [fb_rect.width / 2 - self.title_surface.get_width() / 2,

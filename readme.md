@@ -13,5 +13,17 @@ current accuracy bonus. The accuracy bonus increases when you hit an
 alien but decreases (slowly) whenever one of your bullets misses.
 
 ## Controls
-You can steer your flyer with the arrow keys and shoot with the space bar.
-The space bar is also used to start the game or leave the game-over screen.
+With the escape key you can always leave the game. You can steer your
+flyer with the arrow keys and shoot with the space bar. The space bar
+is also used to start the game or leave the game-over screen.
+
+## Credits
+### Music
+* Battle theme: "Hail the Arbiter" by Centurion_of_war -- https://opengameart.org/content/hail-the-arbiter
+* Game-over theme: "Upbeat Chiptune Theme" by nihilocrat -- https://opengameart.org/content/upbeat-chiptune-theme
+
+### SFX
+* "8bit explosion 4" by MaoDin204 -- https://freesound.org/s/721795/
+* "8bit laser 1" by MaoDin204 -- https://freesound.org/s/721804/
+* "Explosion" by kutejnikov -- https://freesound.org/s/522209/
+* "Laser" by Shaun105 -- https://freesound.org/s/268168/

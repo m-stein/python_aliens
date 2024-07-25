@@ -15,4 +15,3 @@ class Score:
 
     def increment_by(self, value):
         self.value += value
-

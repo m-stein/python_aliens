@@ -12,9 +12,9 @@ class AlienState(Enum):
 
 
 class Alien:
-    def __init__(self, fb_rect, alien_bullets):
-        self.image = pygame.image.load('images/alien.png').convert_alpha()
-        self.explosion_img = pygame.image.load('images/explosion.png').convert_alpha()
+    def __init__(self, fb_rect, alien_bullets, laser_sfx, image, explosion_img):
+        self.image = image
+        self.explosion_img = explosion_img
         self.state = AlienState.ALIVE
         self.fb_rect = fb_rect
         self.pos = np.array([0., -self.image.get_height()])
@@ -22,6 +22,7 @@ class Alien:
         self.collider_offset = np.array([5, 6])
         self.collider_size = np.array([22, 13])
         self.animation = Animation(np.array([32, 32]), 3, 0.1)
+        self.laser_sfx = laser_sfx
         self.explosion_animation = Animation(np.array([32, 32]), 20, 0.02, False)
         self.y_speed = np.random.uniform(20., 60.)
         self.curve_freq_factor = 1 / self.y_speed
@@ -59,6 +60,7 @@ class Alien:
 
     def _fire_bullet(self):
         self.alien_bullets.append(AlienBullet(self.collider().midbottom, self.fb_rect.height))
+        self.laser_sfx.play()
 
     def update(self, delta_time):
         match self.state:

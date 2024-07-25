@@ -23,3 +23,8 @@ class Animation:
         else:
             self.frame = frame % self.num_frames
         self.frame_time %= self.frame_duration
+
+    def reset(self):
+        self.frame = 0
+        self.frame_time = 0.
+        self.finished = False

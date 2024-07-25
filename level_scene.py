@@ -1,4 +1,6 @@
 import pygame
+import music
+
 from lives import Lives
 from scene import Scene
 from player import Player
@@ -29,6 +31,10 @@ class LevelScene(Scene):
         self.bullets = []
         self.max_num_bullets = 3
         self.game_over_screen = GameOverScreen(fb_rect)
+        self.laser_sfx = pygame.mixer.Sound("sfx/player_laser.wav")
+        self.laser_sfx.set_volume(0.1)
+        self.player_explosion_sfx = pygame.mixer.Sound("sfx/player_explosion.wav")
+        self.player_explosion_sfx.set_volume(0.3)
         self.stars_layers = [
             Stars(0.5, 30, fb_rect.height),
             Stars(0.3, 20, fb_rect.height),
@@ -41,6 +47,7 @@ class LevelScene(Scene):
                 if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
                     if self.player.ready_to_shoot() and len(self.bullets) < self.max_num_bullets:
                         self.bullets.append(Bullet(self.player.rifle_tip()))
+                        self.laser_sfx.play()
             case LevelState.GAME_OVER:
                 if self.game_over_screen.fader.finished:
                     if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
@@ -60,11 +67,13 @@ class LevelScene(Scene):
         self.lives.update(delta_time)
 
     def _hit_player(self):
+        self.player_explosion_sfx.play()
         self.accuracy_bonus[0] = 0
         if self.lives.consume_a_life():
             self.player.respawn()
         else:
             self.state = LevelState.GAME_OVER
+            music.play_game_over_theme()
 
     def _update_player(self, delta_time):
         self.player.update(delta_time)

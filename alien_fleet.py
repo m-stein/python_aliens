@@ -1,4 +1,5 @@
 import numpy as np
+import pygame
 from alien import Alien
 
 
@@ -9,7 +10,13 @@ class AlienFleet:
         self.accuracy_bonus = accuracy_bonus
         self.spawn_timeout = None
         self.spawn_timeout = self._new_spawn_timeout()
+        self.explosion_sfx = pygame.mixer.Sound("sfx/alien_explosion.wav")
+        self.explosion_sfx.set_volume(0.2)
         self.aliens = []
+        self.laser_sfx = pygame.mixer.Sound("sfx/alien_laser.wav")
+        self.laser_sfx.set_volume(0.1)
+        self.alien_image = pygame.image.load('images/alien.png').convert_alpha()
+        self.explosion_img = pygame.image.load('images/explosion.png').convert_alpha()
 
     def update(self, delta_time, bullets, score):
         for alien in self.aliens.copy():
@@ -20,6 +27,7 @@ class AlienFleet:
                 for bullet in bullets.copy():
                     if bullet.collider().colliderect(alien.collider()):
                         alien.explode()
+                        self.explosion_sfx.play()
                         bullets.remove(bullet)
                         score.increment_by(5 + self.accuracy_bonus[0])
                         self.accuracy_bonus[0] += 2
@@ -27,7 +35,7 @@ class AlienFleet:
         if self.spawn_timeout > delta_time:
             self.spawn_timeout -= delta_time
         else:
-            self.aliens.append(Alien(self.fb_rect, self.alien_bullets))
+            self.aliens.append(Alien(self.fb_rect, self.alien_bullets, self.laser_sfx, self.alien_image, self.explosion_img))
             self.spawn_timeout = self._new_spawn_timeout()
 
     @staticmethod
